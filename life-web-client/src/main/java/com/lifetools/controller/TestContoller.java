@@ -5,4 +5,7 @@ package com.lifetools.controller;
  * Date 2016/7/1.
  */
 public class TestContoller {
+    public void hello(){
+        System.out.println("1");
+    }
 }
