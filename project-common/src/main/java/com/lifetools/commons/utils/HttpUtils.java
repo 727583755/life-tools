@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * 发送http请求辅助类（支持几乎所有请求的发送）
  * @author Zheng.Ke
- * @date 2016年7月1日 下午5:10:31
  */
 public class HttpUtils {
 	public static final String JSON_CONTENT_TYPE = "application/json";
@@ -233,11 +232,11 @@ public class HttpUtils {
 		return sb.toString();
 	}
 
-	public static Map<String, String> urlEncodedStringToForm(String encoded) {
+	private static Map<String, String> urlEncodedStringToForm(String encoded) {
 		return urlEncodedStringToForm(encoded, "UTF-8");
 	}
 
-	public static Map<String, String> urlEncodedStringToForm(String encoded, String charset) {
+	private static Map<String, String> urlEncodedStringToForm(String encoded, String charset) {
 		if (isBlankOrEmpty(encoded)) {
 			return null;
 		}

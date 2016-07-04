@@ -12,6 +12,10 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * 发送邮件工具类
+ * @author Zheng.Ke
+ */
 public class EmailUtils {
 	public static final String HOST = "smtp.exmail.qq.com";
 	public static final int PORT = 465;
@@ -40,6 +44,13 @@ public class EmailUtils {
 		return session;
 	}
 
+	/**
+	 * 发送邮件
+	 * @param toEmail   接收收邮件地址，如有多个，中间用分号分隔";"
+	 * @param content   邮件内容
+	 * @param subjectText  邮件标题
+	 * @return
+	 */
 	public static boolean send(String toEmail, String content, String subjectText) {
 		if (StringUtils.isBlankOrEmpty(toEmail)) {
 			return false;
