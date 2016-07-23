@@ -25,343 +25,363 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 发送http请求辅助类（支持几乎所有请求的发送）
+ *
  * @author Zheng.Ke
  */
 public class HttpUtils {
-	public static final String JSON_CONTENT_TYPE = "application/json";
-	public static final String DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String JSON_CONTENT_TYPE = "application/json";
+    public static final String DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
-	/**
-	 * get请求
-	 * @param scc  自定义的cookie名，若不网站不要带cookie，传null即可
-	 * @param uri  URL
-	 * @return
-	 */
-	public static String sendWebRequestByGet(String scc, String uri) {
-		return sendWebRequestByGet(scc, uri, null);
-	}
+    /**
+     * get请求
+     *
+     * @param scc 自定义的cookie名，若不网站不要带cookie，传null即可
+     * @param uri URL
+     * @return
+     */
+    public static String sendWebRequestByGet(String scc, String uri) {
+        return sendWebRequestByGet(scc, uri, null);
+    }
 
-	/**
-	 * get请求
-	 * @param scc  自定义的cookie名，若不网站不要带cookie，传null即可
-	 * @param uri  URL
-	 * @param forceRespEncoding  返回值编码 默认UTF-8
-	 * @return
-	 */
-	public static String sendWebRequestByGet(String scc, String uri, String forceRespEncoding) {
-		BasicCookieStore bcs = null;
-		if (scc != null) {
-			bcs = CookieManager.getCookieStore(scc);
-			if (bcs == null) {
-				bcs = new BasicCookieStore();
-				CookieManager.setCookieStore(scc, bcs);
-			}
-		}
-		return sendWebRequest(uri, HttpMethod.GET, null, null, forceRespEncoding, null, bcs);
-	}
+    /**
+     * get请求
+     *
+     * @param scc               自定义的cookie名，若不网站不要带cookie，传null即可
+     * @param uri               URL
+     * @param forceRespEncoding 返回值编码 默认UTF-8
+     * @return
+     */
+    public static String sendWebRequestByGet(String scc, String uri, String forceRespEncoding) {
+        BasicCookieStore bcs = getBasicCookieStore(scc);
+        return sendWebRequest(uri, HttpMethod.GET, null, null, forceRespEncoding, null, bcs);
+    }
 
-	/**
-	 * 发送JSON请求
-	 * @param scc   自定义的cookie名，若不网站不要带cookie，传null即可
-	 * @param uri   URL
-	 * @param jsonStr  json字符串
-	 * @return
-	 */
-	public static String sendWebRequestByPostJsonStr(String scc, String uri, String jsonStr) {
-		return sendWebRequestByPost(scc, uri, jsonStr, null, JSON_CONTENT_TYPE);
-	}
+    /**
+     * 发送JSON请求
+     *
+     * @param scc     自定义的cookie名，若不网站不要带cookie，传null即可
+     * @param uri     URL
+     * @param jsonStr json字符串
+     * @return
+     */
+    public static String sendWebRequestByPostJsonStr(String scc, String uri, String jsonStr) {
+        return sendWebRequestByPost(scc, uri, jsonStr, null, JSON_CONTENT_TYPE);
+    }
 
-	public static String sendWebRequestByPost(String scc, String uri, String contents, String reqEncoding, String contentType) {
-		BasicCookieStore bcs = null;
-		if (scc != null) {
-			bcs = CookieManager.getCookieStore(scc);
-			if (bcs == null) {
-				bcs = new BasicCookieStore();
-				CookieManager.setCookieStore(scc, bcs);
-			}
-		}
-		Map<String, String> headers = new HashMap<String, String>();
-		if (contentType != null) {
-			headers.put("Content-Type", contentType);
-		}
-		return sendWebRequest(uri, HttpMethod.POST, headers, contents, reqEncoding, null, null, bcs);
-	}
+    /**
+     * 发送JSON请求
+     *
+     * @param scc     自定义的cookie名，若不网站不要带cookie，传null即可
+     * @param uri     URL
+     * @param jsonStr json字符串
+     * @param timeout 超时时间(ms)
+     * @return
+     */
+    public static String sendWebRequestByPostJsonStr(String scc, String uri, String jsonStr, Integer timeout) {
+        BasicCookieStore bcs = getBasicCookieStore(scc);
+        return sendWebRequest(uri, HttpMethod.POST, null, jsonStr, null, null, timeout, bcs);
+    }
 
-	public static String sendWebRequestByForm(String scc, String uri, Map<String, String> params) {
-		return sendWebRequestByForm(scc, uri, null, params, null);
-	}
+    public static String sendWebRequestByPost(String scc, String uri, String contents, String reqEncoding, String contentType) {
+        BasicCookieStore bcs = getBasicCookieStore(scc);
+        Map<String, String> headers = new HashMap<String, String>();
+        if (contentType != null) {
+            headers.put("Content-Type", contentType);
+        }
+        return sendWebRequest(uri, HttpMethod.POST, headers, contents, reqEncoding, null, null, bcs);
+    }
 
-	public static String sendWebRequestByForm(String scc, String uri, Map<String, String> headers, Map<String, String> params, String reqEncoding) {
-		BasicCookieStore bcs = null;
-		if (scc != null) {
-			bcs = CookieManager.getCookieStore(scc);
-			if (bcs == null) {
-				bcs = new BasicCookieStore();
-				CookieManager.setCookieStore(scc, bcs);
-			}
-		}
-		boolean hasContentType = false;
-		Map<String, String> kvpHeaders = new HashMap<String, String>();
-		if (headers != null)
-			for (String key : headers.keySet()) {
-				if (key.equalsIgnoreCase("Content-Type")) {
-					hasContentType = true;
-				}
-				kvpHeaders.put(key, headers.get(key));
-			}
-		if (!hasContentType) {
-			kvpHeaders.put("Content-Type", DEFAULT_CONTENT_TYPE);
-		}
-		return sendWebRequest(uri, HttpMethod.POST, kvpHeaders, formToUrlEncodedString(params, reqEncoding), reqEncoding, null, null, bcs);
+    public static String sendWebRequestByForm(String scc, String uri, Map<String, String> params) {
+        return sendWebRequestByForm(scc, uri, null, params, null);
+    }
 
-	}
+    public static String sendWebRequestByForm(String scc, String uri, Map<String, String> headers, Map<String, String> params, String reqEncoding) {
+        BasicCookieStore bcs = getBasicCookieStore(scc);
+        boolean hasContentType = false;
+        Map<String, String> kvpHeaders = new HashMap<String, String>();
+        if (headers != null)
+            for (String key : headers.keySet()) {
+                if (key.equalsIgnoreCase("Content-Type")) {
+                    hasContentType = true;
+                }
+                kvpHeaders.put(key, headers.get(key));
+            }
+        if (!hasContentType) {
+            kvpHeaders.put("Content-Type", DEFAULT_CONTENT_TYPE);
+        }
+        return sendWebRequest(uri, HttpMethod.POST, kvpHeaders, formToUrlEncodedString(params, reqEncoding), reqEncoding, null, null, bcs);
 
-	public static String sendWebRequest(String uri, HttpMethod httpMethod, Map<String, String> headers, String contents, String reqEncoding, String forceRespEncoding, Integer timeout, BasicCookieStore cookieStore) {
-		if (contents == null) {
-			contents = "";
-		}
-		if (isBlankOrEmpty(reqEncoding)) {
-			reqEncoding = "UTF-8";
-		}
-		return sendWebRequest(uri, httpMethod, headers, contents.getBytes(Charset.forName(reqEncoding)), forceRespEncoding, timeout, cookieStore);
-	}
+    }
 
-	public static String sendWebRequest(String uri, HttpMethod httpMethod, Map<String, String> headers, byte[] contents, String forceRespEncoding, Integer timeout, BasicCookieStore cookieStore) {
-		if (timeout == null || timeout < 1000) {
-			timeout = 10000;
-		} else if (timeout > 100000) {
-			timeout = 100000;
-		}
-		if (cookieStore == null)
-			cookieStore = new BasicCookieStore();
+    public static String sendWebRequest(String uri, HttpMethod httpMethod, Map<String, String> headers, String contents, String reqEncoding, String forceRespEncoding, Integer timeout, BasicCookieStore cookieStore) {
+        if (contents == null) {
+            contents = "";
+        }
+        if (isBlankOrEmpty(reqEncoding)) {
+            reqEncoding = "UTF-8";
+        }
+        return sendWebRequest(uri, httpMethod, headers, contents.getBytes(Charset.forName(reqEncoding)), forceRespEncoding, timeout, cookieStore);
+    }
 
-		try {
-			RequestConfig defaultRequestConfig = RequestConfig.custom()
-					                             .setSocketTimeout(timeout)
-					                             .setConnectTimeout(timeout)
-					                      		 .setConnectionRequestTimeout(timeout)
-					                             .build();
-			CloseableHttpClient httpclient = null;
-			try {
-				if (uri.startsWith("https://")) {
-					SSLContext ctx = SSLContext.getInstance("SSL");
-					ctx.init(null, new TrustManager[] {new X509TrustManager() { // 不需要实现
-						public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-						}
-						public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-						}
-						public X509Certificate[] getAcceptedIssuers() {
-							return new X509Certificate[0];
-						}
-					}}, null);
-					SSLConnectionSocketFactory ssf = new SSLConnectionSocketFactory(ctx);
-					httpclient = HttpClients.custom()
-							     .setDefaultCookieStore(cookieStore)
-							     .setDefaultRequestConfig(defaultRequestConfig)
-							     .setSSLSocketFactory(ssf)
-							     .build();
-				} else {
-					httpclient = HttpClients.custom()
-							     .setDefaultCookieStore(cookieStore)
-							     .setDefaultRequestConfig(defaultRequestConfig)
-							     .build();
-				}
-				CloseableHttpResponse response = null;
-				HttpRequestBase request = null;
-				if (httpMethod == HttpMethod.GET) {
-					request = new HttpGet(uri);
-				} else {
-					request = new HttpPost(uri);
-					ByteArrayEntity byteEntity = new ByteArrayEntity(contents);
-					((HttpPost) request).setEntity(byteEntity);
-				}
-				if (headers != null) {
-					for (String key : headers.keySet()) {
-						request.setHeader(key, headers.get(key));
-					}
-				}
-				response = httpclient.execute(request);
-				try {
-					if (response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 201) {
-						if (response.getStatusLine().getStatusCode() == 302)
-							return response.getHeaders("Location")[0].getValue();
-						return null;
-					}
-					HttpEntity entity = response.getEntity();
-					if (entity != null) {
-						if (forceRespEncoding == null)
-							return EntityUtils.toString(entity);
-						else
-							return byteArrayToString(EntityUtils.toByteArray(entity), forceRespEncoding);
-					}
-				} finally {
-					if (response != null)
-						response.close();
-				}
-			} finally {
-				if (httpclient != null)
-					httpclient.close();
-			}
-		} catch (Exception e) {
-			System.out.println("web request exception: " + uri);
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public static String sendWebRequest(String uri, HttpMethod httpMethod, Map<String, String> headers, byte[] contents, String forceRespEncoding, Integer timeout, BasicCookieStore cookieStore) {
+        if (timeout == null || timeout < 1000) {
+            timeout = 10000;
+        } else if (timeout > 100000) {
+            timeout = 100000;
+        }
+        if (cookieStore == null)
+            cookieStore = new BasicCookieStore();
 
-	private static String formToUrlEncodedString(Map<String, String> params) {
-		return formToUrlEncodedString(params, "UTF-8");
-	}
+        try {
+            RequestConfig defaultRequestConfig = RequestConfig.custom()
+                    .setSocketTimeout(timeout)
+                    .setConnectTimeout(timeout)
+                    .setConnectionRequestTimeout(timeout)
+                    .build();
+            CloseableHttpClient httpclient = null;
+            try {
+                if (uri.startsWith("https://")) {
+                    SSLContext ctx = SSLContext.getInstance("SSL");
+                    ctx.init(null, new TrustManager[]{new X509TrustManager() { // 不需要实现
+                        public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                        }
 
-	private static String formToUrlEncodedString(Map<String, String> params, String charset) {
-		StringBuilder sb = new StringBuilder();
-		if (params != null && params.size() > 0)
-			for (String key : params.keySet()) {
-				sb.append(key);
-				sb.append('=');
-				sb.append(urlEncode(params.get(key), charset));
-				sb.append('&');
-			}
-		if (sb.length() > 0) {
-			sb.deleteCharAt(sb.length() - 1);
-		}
+                        public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                        }
 
-		return sb.toString();
-	}
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+                    }}, null);
+                    SSLConnectionSocketFactory ssf = new SSLConnectionSocketFactory(ctx);
+                    httpclient = HttpClients.custom()
+                            .setDefaultCookieStore(cookieStore)
+                            .setDefaultRequestConfig(defaultRequestConfig)
+                            .setSSLSocketFactory(ssf)
+                            .build();
+                } else {
+                    httpclient = HttpClients.custom()
+                            .setDefaultCookieStore(cookieStore)
+                            .setDefaultRequestConfig(defaultRequestConfig)
+                            .build();
+                }
+                CloseableHttpResponse response = null;
+                HttpRequestBase request = null;
+                if (httpMethod == HttpMethod.GET) {
+                    request = new HttpGet(uri);
+                } else {
+                    request = new HttpPost(uri);
+                    ByteArrayEntity byteEntity = new ByteArrayEntity(contents);
+                    ((HttpPost) request).setEntity(byteEntity);
+                }
+                if (headers != null) {
+                    for (String key : headers.keySet()) {
+                        request.setHeader(key, headers.get(key));
+                    }
+                }
+                response = httpclient.execute(request);
+                try {
+                    if (response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 201) {
+                        if (response.getStatusLine().getStatusCode() == 302)
+                            return response.getHeaders("Location")[0].getValue();
+                        return null;
+                    }
+                    HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        if (forceRespEncoding == null)
+                            return EntityUtils.toString(entity);
+                        else
+                            return byteArrayToString(EntityUtils.toByteArray(entity), forceRespEncoding);
+                    }
+                } finally {
+                    if (response != null)
+                        response.close();
+                }
+            } finally {
+                if (httpclient != null)
+                    httpclient.close();
+            }
+        } catch (Exception e) {
+            System.out.println("web request exception: " + uri);
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	private static Map<String, String> urlEncodedStringToForm(String encoded) {
-		return urlEncodedStringToForm(encoded, "UTF-8");
-	}
+    private static String formToUrlEncodedString(Map<String, String> params) {
+        return formToUrlEncodedString(params, "UTF-8");
+    }
 
-	private static Map<String, String> urlEncodedStringToForm(String encoded, String charset) {
-		if (isBlankOrEmpty(encoded)) {
-			return null;
-		}
-		Map<String, String> retval = new HashMap<String, String>();
-		String[] params = encoded.split("&");
-		for (String param : params) {
-			String[] kvp = param.split("=");
-			retval.put(kvp[0], kvp.length > 1 ? urlDecode(kvp[1], charset) : "");
-		}
-		return retval;
-	}
+    private static String formToUrlEncodedString(Map<String, String> params, String charset) {
+        StringBuilder sb = new StringBuilder();
+        if (params != null && params.size() > 0)
+            for (String key : params.keySet()) {
+                sb.append(key);
+                sb.append('=');
+                sb.append(urlEncode(params.get(key), charset));
+                sb.append('&');
+            }
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
 
-	/**
-	 * URL编码
-	 * @param origin  要编码的文本
-	 * @return
-	 */
-	public static String urlEncode(String origin) {
-		return urlEncode(origin, "UTF-8");
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * URL编码
-	 * @param origin  要编码的文本
-	 * @param charset   编码格式
-	 * @return
-	 */
-	public static String urlEncode(String origin, String charset) {
-		try {
-			if (isBlankOrEmpty(charset)) {
-				charset = "UTF-8";
-			}
-			return URLEncoder.encode(origin, charset);
-		} catch (UnsupportedEncodingException e) {
-		}
-		return null;
-	}
+    private static Map<String, String> urlEncodedStringToForm(String encoded) {
+        return urlEncodedStringToForm(encoded, "UTF-8");
+    }
 
-	/**
-	 * URL解码
-	 * @param encoded  要解码的文本
-	 * @return
-	 */
-	public static String urlDecode(String encoded) {
-		return urlDecode(encoded, "UTF-8");
-	}
+    private static Map<String, String> urlEncodedStringToForm(String encoded, String charset) {
+        if (isBlankOrEmpty(encoded)) {
+            return null;
+        }
+        Map<String, String> retval = new HashMap<String, String>();
+        String[] params = encoded.split("&");
+        for (String param : params) {
+            String[] kvp = param.split("=");
+            retval.put(kvp[0], kvp.length > 1 ? urlDecode(kvp[1], charset) : "");
+        }
+        return retval;
+    }
 
-	/**
-	 * URL解码
-	 * @param encoded  要解码的文本
-	 * @param charset   解码格式
-	 * @return
-	 */
-	public static String urlDecode(String encoded, String charset) {
-		try {
-			if (isBlankOrEmpty(charset)) {
-				charset = "UTF-8";
-			}
-			return URLDecoder.decode(encoded, charset);
-		} catch (UnsupportedEncodingException e) {
-		}
-		return null;
-	}
+    /**
+     * URL编码
+     *
+     * @param origin 要编码的文本
+     * @return
+     */
+    public static String urlEncode(String origin) {
+        return urlEncode(origin, "UTF-8");
+    }
 
-	private static String addParamsToUrl(String url, Map<String, String> params, boolean isNeedUrlEncode, String urlEncoding) {
-		try {
-			StringBuilder sb = new StringBuilder();
-			sb.append(url.trim());
-			if (url.contains("?")) {
-				if (sb.charAt(sb.length() - 1) != '?' && sb.charAt(sb.length() - 1) != '&') {
-					sb.append('&');
-				}
-			} else {
-				sb.append('?');
-			}
-			if (params != null && params.size() > 0)
-				for (String key : params.keySet()) {
-					sb.append(key);
-					sb.append('=');
-					if (isNeedUrlEncode) {
-						sb.append(URLEncoder.encode(params.get(key), urlEncoding));
-					} else {
-						sb.append(params.get(key));
-					}
-					sb.append('&');
-				}
-			sb.deleteCharAt(sb.length() - 1);
+    /**
+     * URL编码
+     *
+     * @param origin  要编码的文本
+     * @param charset 编码格式
+     * @return
+     */
+    public static String urlEncode(String origin, String charset) {
+        try {
+            if (isBlankOrEmpty(charset)) {
+                charset = "UTF-8";
+            }
+            return URLEncoder.encode(origin, charset);
+        } catch (UnsupportedEncodingException e) {
+        }
+        return null;
+    }
 
-			return sb.toString();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    /**
+     * URL解码
+     *
+     * @param encoded 要解码的文本
+     * @return
+     */
+    public static String urlDecode(String encoded) {
+        return urlDecode(encoded, "UTF-8");
+    }
 
-	private static String addParamsToContent(Map<String, String> params, boolean isNeedUrlEncode, String urlEncoding)
-			throws UnsupportedEncodingException {
-		StringBuilder sb = new StringBuilder();
-		if (params != null && params.size() > 0)
-			for (String key : params.keySet()) {
-				sb.append(key);
-				sb.append('=');
-				if (isNeedUrlEncode) {
-					sb.append(URLEncoder.encode(params.get(key), urlEncoding));
-				} else {
-					sb.append(params.get(key));
-				}
-				sb.append('&');
-			}
-		if (sb.length() > 0) {
-			sb.deleteCharAt(sb.length() - 1);
-		}
+    /**
+     * URL解码
+     *
+     * @param encoded 要解码的文本
+     * @param charset 解码格式
+     * @return
+     */
+    public static String urlDecode(String encoded, String charset) {
+        try {
+            if (isBlankOrEmpty(charset)) {
+                charset = "UTF-8";
+            }
+            return URLDecoder.decode(encoded, charset);
+        } catch (UnsupportedEncodingException e) {
+        }
+        return null;
+    }
 
-		return sb.toString();
-	}
+    private static String addParamsToUrl(String url, Map<String, String> params, boolean isNeedUrlEncode, String urlEncoding) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(url.trim());
+            if (url.contains("?")) {
+                if (sb.charAt(sb.length() - 1) != '?' && sb.charAt(sb.length() - 1) != '&') {
+                    sb.append('&');
+                }
+            } else {
+                sb.append('?');
+            }
+            if (params != null && params.size() > 0)
+                for (String key : params.keySet()) {
+                    sb.append(key);
+                    sb.append('=');
+                    if (isNeedUrlEncode) {
+                        sb.append(URLEncoder.encode(params.get(key), urlEncoding));
+                    } else {
+                        sb.append(params.get(key));
+                    }
+                    sb.append('&');
+                }
+            sb.deleteCharAt(sb.length() - 1);
 
-	private static String byteArrayToString(byte[] bytes, String encoding) {
-		return new String(bytes, Charset.forName(encoding));
-	}
+            return sb.toString();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	private static boolean isBlankOrEmpty(String s) {
-		if (s == null || s.trim().equals("")) {
-			return true;
-		}
-		return false;
-	}
+    private static String addParamsToContent(Map<String, String> params, boolean isNeedUrlEncode, String urlEncoding)
+            throws UnsupportedEncodingException {
+        StringBuilder sb = new StringBuilder();
+        if (params != null && params.size() > 0)
+            for (String key : params.keySet()) {
+                sb.append(key);
+                sb.append('=');
+                if (isNeedUrlEncode) {
+                    sb.append(URLEncoder.encode(params.get(key), urlEncoding));
+                } else {
+                    sb.append(params.get(key));
+                }
+                sb.append('&');
+            }
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+
+        return sb.toString();
+    }
+
+    private static String byteArrayToString(byte[] bytes, String encoding) {
+        return new String(bytes, Charset.forName(encoding));
+    }
+
+    private static BasicCookieStore getBasicCookieStore(String scc) {
+        BasicCookieStore bcs = null;
+        if (scc != null) {
+            bcs = CookieManager.getCookieStore(scc);
+            if (bcs == null) {
+                bcs = new BasicCookieStore();
+                CookieManager.setCookieStore(scc, bcs);
+            }
+        }
+        return bcs;
+    }
+
+    private static boolean isBlankOrEmpty(String s) {
+        return s == null || s.trim().equals("");
+    }
+
+    public static boolean isValidURL(String url) {
+        Pattern pattern = Pattern.compile("(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?");
+        Matcher matcher = pattern.matcher(url);
+        return matcher.matches();
+    }
 
 }
