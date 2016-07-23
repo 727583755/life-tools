@@ -54,7 +54,7 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan">
 			<list>
-				<value>com.zzc</value>
+				<value>com</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -74,7 +74,7 @@
 
 	<!-- 事务配置 -->
 	<aop:config>
-		<aop:pointcut expression="execution(public * com.zzc.service.*.*(..))"
+		<aop:pointcut expression="execution(public * com.*.service.*.*(..))"
 			id="txPointcut" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
 	</aop:config>

@@ -21,7 +21,7 @@
 	</filter>
 	<filter>
 		<filter-name>cors</filter-name>
-		<filter-class>com.gowild.xxb.filter.SimpleCORSFilter</filter-class>
+		<filter-class>com.lifetools.filter.SimpleCORSFilter</filter-class>
 	</filter>
 	
 	<filter-mapping>
