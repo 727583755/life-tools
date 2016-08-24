@@ -1,4 +1,4 @@
-package com.lifetools.commons.utils;
+package com.lifetools.commons.vo;
 
 import org.apache.http.impl.client.BasicCookieStore;
 
