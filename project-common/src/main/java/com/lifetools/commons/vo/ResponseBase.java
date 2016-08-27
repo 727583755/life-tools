@@ -1,7 +1,7 @@
 package com.lifetools.commons.vo;
 
-import com.lifetools.commons.constants.StatusCode;
-import com.lifetools.commons.utils.StringUtils;
+import com.lifetools.commons.constant.StatusCode;
+import com.lifetools.commons.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

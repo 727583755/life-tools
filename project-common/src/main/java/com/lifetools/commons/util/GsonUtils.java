@@ -1,4 +1,4 @@
-package com.lifetools.commons.utils;
+package com.lifetools.commons.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

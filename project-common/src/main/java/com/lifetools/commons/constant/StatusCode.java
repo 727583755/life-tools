@@ -1,4 +1,4 @@
-package com.lifetools.commons.constants;
+package com.lifetools.commons.constant;
 
 /**
  * 状态码

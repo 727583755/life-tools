@@ -1,4 +1,4 @@
-package com.lifetools.commons.utils;
+package com.lifetools.commons.util;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;

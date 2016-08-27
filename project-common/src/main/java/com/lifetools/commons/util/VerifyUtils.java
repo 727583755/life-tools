@@ -1,4 +1,4 @@
-package com.lifetools.commons.utils;
+package com.lifetools.commons.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;

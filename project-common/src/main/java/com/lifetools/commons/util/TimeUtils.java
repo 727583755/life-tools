@@ -1,4 +1,4 @@
-package com.lifetools.commons.utils;
+package com.lifetools.commons.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

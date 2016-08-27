@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #content {
+            padding: 0px 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .nav ul li {
+            display: inline-block;
+            float: left;
+            width: 33%;
+            text-align: center;
+            border-right: 1px solid #888888;
+            padding: 5px 0px;
+            background-color: #4CAF50;
+            cursor: pointer;
+        }
+
+        .nav ul li:last-child {
+            border-right: none;
+        }
+
+        .nav ul li a {
+            font-weight: bold;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .nav .active {
+            background-color: #FFFFFF;
+        }
+
+        .nav .active a {
+            color: #000000;
+        }
+
+        .submit-btn {
+            border: none;
+            display: block;
+            width: 100%;
+            padding: 5px 0px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: #3e8e41;
+        }
+
+        .input-list ul {
+            padding: 5px 0px;
+            clear: left;
+        }
+
+        .input-list li {
+            padding: 10px 0px;
+            border-bottom: 1px solid #4CAF50;
+        }
+
+        .input-list li span:first-child {
+            width: 30%;
+            display: inline-block;
+        }
+
+        .input-list li span:last-child {
+            width: 65%;
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="head"></div>
+
+    <div id="content">
+        <div class="nav">
+            <ul>
+                <li><a href="#">AAA</a></li>
+                <li class="active"><a href="#">BBB</a></li>
+                <li><a href="#">CCC</a></li>
+            </ul>
+        </div>
+
+        <div class="input-list">
+            <form id="myform" action="/aaa" method="post">
+            <ul>
+                <li>
+                    <span>贷款总额</span>:
+                    <span>
+                        <input type="tel" name="mortgageTotal" value="100"> 万
+                    </span>
+                </li>
+                <li>
+                    <span>按揭年数</span>:
+                    <span>
+                        <select name="month">
+							<option value="12">1年（12期）</option>
+                            <option value="24">2年（24期）</option>
+                            <option value="36">3年（36期）</option>
+                            <option value="48">4年（48期）</option>
+                            <option value="60">5年（60期）</option>
+                            <option value="72">6年（72期）</option>
+                            <option value="84">7年（84期）</option>
+                            <option value="96">8年（96期）</option>
+                            <option value="108">9年（108期）</option>
+                            <option value="120">10年（120期）</option>
+                            <option value="132">11年（132期）</option>
+                            <option value="144">12年（144期）</option>
+                            <option value="156">13年（156期）</option>
+                            <option value="168">14年（168期）</option>
+                            <option value="180">15年（180期）</option>
+                            <option value="192">16年（192期）</option>
+                            <option value="204">17年（204期）</option>
+                            <option value="216">18年（216期）</option>
+                            <option value="228">19年（228期）</option>
+                            <option selected value="240">20年（240期）</option>
+                            <option value="252">21年（252期）</option>
+                            <option value="264">22年（264期）</option>
+                            <option value="276">23年（276期）</option>
+                            <option value="288">24年（288期）</option>
+                            <option value="300">25年（300期）</option>
+                            <option value="312">26年（312期）</option>
+                            <option value="324">27年（324期）</option>
+                            <option value="336">28年（336期）</option>
+                            <option value="348">29年（348期）</option>
+                            <option value="360">30年（360期）</option>
+						</select>
+                    </span>
+                </li>
+                <li>
+                    <span>利率</span>:
+                    <span>
+                        <input type="tel" name="rate" value="4.9"> %
+                    </span>
+                </li>
+            </ul>
+            </form>
+            <br/>
+            <button id="submit" type="button" class="submit-btn">开始计算</button>
+        </div>
+
+        <div>
+
+        </div>
+
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="http://cdn.bootcss.com/jquery/2.0.1/jquery.min.js" ></script>
+    <script src="js/common.js" ></script>
+
+    <script>
+        $(function () {
+            var jsonObj = $("#myform").serializeObject();
+            var jsonStr = JSON.stringify(jsonObj);
+            $("#submit").click(function () {
+                $.ajax({
+                    type: "post",
+                    url: "http://127.0.0.1:8080/life-web-client/rest/mortgage/calculate",
+                    dataType: "json",
+                    contentType : "application/json ; charset=utf-8",
+                    data: jsonStr,
+                    success: function(data) {
+                        if (data.status != 100) {
+                            return;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

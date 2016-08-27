@@ -21,7 +21,7 @@ public class SimpleCORSFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		Boolean isCrossOrigin = false;
+		Boolean isCrossOrigin = true;
 		if (isCrossOrigin != null && isCrossOrigin) {
 			HttpServletResponse  resp = (HttpServletResponse) response;
 			resp.setHeader("Access-Control-Allow-Origin", "*");
