@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Title</title>
 
     <style>
         #content {
-            padding: 0px 10px;
+            padding: 0px 0.1%;
         }
 
         ul {
@@ -37,7 +38,7 @@
         }
 
         .nav .active {
-            background-color: #FFFFFF;
+            background-color: #3e8e41;
         }
 
         .nav .active a {
@@ -48,7 +49,7 @@
             border: none;
             display: block;
             width: 100%;
-            padding: 5px 0px;
+            padding: 10px 0px;
             cursor: pointer;
             background-color: #4CAF50;
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
@@ -78,6 +79,46 @@
             display: inline-block;
         }
 
+        .title {
+            width: 100%;
+        }
+
+        .float-title {
+            position: fixed;
+            width: 100%;
+            display: none;
+            z-index: 1;
+        }
+
+        .title-hide {
+            display: none;
+        }
+
+        .title-display {
+            display: block;
+            top: 0;
+        }
+
+        .title span, .float-title span {
+            background-color: #3e8e41;
+        }
+
+        .title span, .float-title span, .money-list span {
+            float: left;
+            text-align: center;
+            width: 50%;
+            padding: 10px 0px;
+        }
+
+        .money-list span {
+            border-bottom: 1px solid #888888;
+        }
+
+        .clearfix {
+            clear: both;
+            display: block;
+        }
+
     </style>
 </head>
 <body>
@@ -86,9 +127,9 @@
     <div id="content">
         <div class="nav">
             <ul>
-                <li><a href="#">AAA</a></li>
-                <li class="active"><a href="#">BBB</a></li>
-                <li><a href="#">CCC</a></li>
+                <li class="active" ><a href="#">商业贷款</a></li>
+                <li><a href="#">公积金</a></li>
+                <li><a href="#">组合型</a></li>
             </ul>
         </div>
 
@@ -98,7 +139,7 @@
                 <li>
                     <span>贷款总额</span>:
                     <span>
-                        <input type="tel" name="mortgageTotal" value="100"> 万
+                        <input type="tel" name="mortgageTotal" value="100" /> 万
                     </span>
                 </li>
                 <li>
@@ -141,7 +182,7 @@
                 <li>
                     <span>利率</span>:
                     <span>
-                        <input type="tel" name="rate" value="4.9"> %
+                        <input type="number" name="rate" value="4.9"> %
                     </span>
                 </li>
             </ul>
@@ -149,9 +190,21 @@
             <br/>
             <button id="submit" type="button" class="submit-btn">开始计算</button>
         </div>
+        <br/>
+        <br/>
 
         <div>
+            <div id="myTitle" class="title">
+                <span>月份</span>
+                <span>月供</span>
+            </div>
+            <div class="float-title">
+                <span>月份</span>
+                <span>月供</span>
+            </div>
+            <ul class="money-list clearfix">
 
+            </ul>
         </div>
 
     </div>
@@ -163,23 +216,61 @@
 
     <script>
         $(function () {
-            var jsonObj = $("#myform").serializeObject();
-            var jsonStr = JSON.stringify(jsonObj);
             $("#submit").click(function () {
+                var jsonObj = $("#myform").serializeObject();
+                var jsonStr = JSON.stringify(jsonObj);
                 $.ajax({
                     type: "post",
-                    url: "http://127.0.0.1:8080/life-web-client/rest/mortgage/calculate",
+                    url: "http://123.56.195.62:8099/life-web-client/rest/mortgage/calculate",
                     dataType: "json",
                     contentType : "application/json ; charset=utf-8",
                     data: jsonStr,
                     success: function(data) {
-                        if (data.status != 100) {
+                        if (data.statusCode != 200) {
+                            alert(data.statusDesc);
                             return;
                         }
+                        $(".money-list").empty();
+                        var liStr = "";
+                        for (var i=0; i<data.data.length; i++) {
+                            var item = data.data[i];
+                            liStr += "<li class='clearfix'>";
+                            liStr += "<span>" + item.monthCnt + "</span>";
+                            liStr += "<span>" + item.monthPay + "</span>";
+                            liStr += "</li>";
+                        }
+                        $(".money-list").append(liStr);
+                        location.hash="#myTitle";
                     }
                 });
             });
         });
+
+        document.addEventListener('touchstart',function () {
+            floatTitle();
+        });
+
+        document.addEventListener('touchmove',function () {
+            floatTitle();
+        });
+        document.addEventListener('touchend',function () {
+            floatTitle();
+        });
+
+        function floatTitle() {
+            //获取div距离顶部的距离
+            var mTop = document.getElementById('myTitle').offsetTop;
+            //减去滚动条的高度
+            var sTop = document.body.scrollTop;
+            var result = mTop - sTop;
+            if (result <= 0) {
+                $(".float-title").addClass("title-display");
+            } else {
+                $(".float-title").removeClass("title-display");
+                $(".float-title").addClass("title-hide");
+            }
+        }
+
     </script>
 </body>
 </html>

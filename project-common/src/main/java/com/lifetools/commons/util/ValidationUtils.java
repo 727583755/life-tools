@@ -16,17 +16,29 @@ public final class ValidationUtils {
 
     /**
      * 验证对象
+     *
      * @param obj
      * @param <T>
      * @return
      */
-    public static <T> ValidationResult validateEntity(T obj){
+    public static <T> ValidationResult validateEntity(T obj) {
+        return validateEntity(obj, Default.class);
+    }
+
+    /**
+     * 验证对象
+     *
+     * @param obj
+     * @param <T>
+     * @return
+     */
+    public static <T> ValidationResult validateEntity(T obj, Class<?>... groups) {
         ValidationResult result = new ValidationResult();
-        Set<ConstraintViolation<T>> set = validator.validate(obj, Default.class);
-        if(set.size() > 0){
+        Set<ConstraintViolation<T>> set = validator.validate(obj, groups);
+        if (set.size() > 0) {
             result.setHasErrors(true);
             StringBuffer sb = new StringBuffer();
-            for(ConstraintViolation<T> cv : set){
+            for (ConstraintViolation<T> cv : set) {
                 sb.append(cv.getPropertyPath().toString()).append(":").append(cv.getMessage()).append("; ");
             }
             result.setErrorDesc(sb.toString());
@@ -34,6 +46,7 @@ public final class ValidationUtils {
         return result;
     }
 
-    private ValidationUtils() {}
+    private ValidationUtils() {
+    }
 
 }
