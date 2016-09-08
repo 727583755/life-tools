@@ -1,26 +1,30 @@
 package com.lifetools.vo.response;
 
+import java.util.List;
+
 /**
  * Created by Zheng.Ke
  * Date 2016/8/25.
  */
 public class MortgageRespVo {
-    private Integer monthCnt;
-    private Double monthPay;
+    /** 等额本金方式 */
+    private MortgageVo avgCapitalType;
+    /** 等额本息方式 */
+    private MortgageVo avgInterestType;
 
-    public Integer getMonthCnt() {
-        return monthCnt;
+    public MortgageVo getAvgCapitalType() {
+        return avgCapitalType;
     }
 
-    public void setMonthCnt(Integer monthCnt) {
-        this.monthCnt = monthCnt;
+    public void setAvgCapitalType(MortgageVo avgCapitalType) {
+        this.avgCapitalType = avgCapitalType;
     }
 
-    public Double getMonthPay() {
-        return monthPay;
+    public MortgageVo getAvgInterestType() {
+        return avgInterestType;
     }
 
-    public void setMonthPay(Double monthPay) {
-        this.monthPay = monthPay;
+    public void setAvgInterestType(MortgageVo avgInterestType) {
+        this.avgInterestType = avgInterestType;
     }
 }
