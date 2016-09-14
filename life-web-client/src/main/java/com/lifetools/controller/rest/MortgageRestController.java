@@ -65,6 +65,7 @@ public class MortgageRestController {
             Double cpfMortgageTotal = paramsVo.getCpfMortgageTotal()*10000;//元
             Double cpfRate = paramsVo.getCpfRate()/100;
             avgCapitalType = processAvgCapitalMortgage(cpfMortgageTotal, cpfRate, month);
+            avgInterestType = processAvgInterestMortgage(cpfMortgageTotal, cpfRate, month);
         } else if (type ==3) {
             Double businessMortgageTotal = paramsVo.getBusinessMortgageTotal()*10000;//元
             Double cpfMortgageTotal = paramsVo.getCpfMortgageTotal()*10000;//元
@@ -72,11 +73,11 @@ public class MortgageRestController {
             Double cpfRate = paramsVo.getCpfRate()/100;
 
             avgCapitalType = processAvgCapitalMortgage(businessMortgageTotal, businessRate, month);
-            avgCapitalType = processAvgCapitalMortgage(cpfMortgageTotal, cpfRate, month);
+            avgInterestType = processAvgInterestMortgage(cpfMortgageTotal, cpfRate, month);
 //            dataList = addList(businessList, cpfList);
         }
 
-//        mortgageRespVo.setAvgCapitalType(avgCapitalType);
+        mortgageRespVo.setAvgCapitalType(avgCapitalType);
         mortgageRespVo.setAvgInterestType(avgInterestType);
         ResponseBase response = new ResponseBase(StatusCode.CODE_200, mortgageRespVo);
         return GsonUtils.toJson(response);
