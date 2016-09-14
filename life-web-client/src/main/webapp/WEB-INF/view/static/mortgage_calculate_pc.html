@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="plug/foundation/css/foundation.min.css">
+    <link rel="stylesheet" href="plug/foundation/css/app.css">
+    <script src="plug/foundation/js/vendor/jquery.js"></script>
+    <script src="plug/foundation/js/vendor/foundation.min.js"></script>
+    <script src="plug/foundation/js/app.js"></script>
+    <script src="js/common.js"></script>
+
+    <style>
+        #content {
+            margin: 10px auto;
+        }
+
+        .tabs {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        #refundType li {
+            width: 50%;
+        }
+
+        #loanType li {
+            width: 33.3%;
+        }
+
+        #loanType a, #refundType a {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .tabs-content {
+            width: 90%;
+            margin: 0 auto;
+            border: none;
+        }
+
+        .tabs-content > .tabs-panel {
+            animation: tabsEffect 500ms;
+        }
+
+        @keyframes tabsEffect {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #dataList {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+<body>
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="menu">
+            <li><a href="#">主页</a></li>
+            <li><a href="mortgage_calculate_pc.html">房贷计算器</a></li>
+        </ul>
+    </div>
+</div>
+
+<div id="content">
+    <ul class="tabs" data-tabs id="loanType">
+        <li class="tabs-title is-active"><a href="#business">商业贷款</a></li>
+        <li class="tabs-title"><a href="#cpf">公积金贷款</a></li>
+        <li class="tabs-title"><a href="#businessAndCPF">组合贷款</a></li>
+    </ul>
+
+    <div class="tabs-content" data-tabs-content="loanType">
+        <div class="tabs-panel is-active" id="business">
+            <form id="businessForm" onsubmit="return false;">
+                <input type="hidden" name="type" value="1">
+                <div class="row">
+                    <div class="small-3 columns">
+                        <label class="text-right middle">贷款总额</label>
+                    </div>
+                    <div class="small-2 columns">
+                        <input type="tel" name="businessMortgageTotal" value="100" class="text-right">
+                    </div>
+                    <div class="small-1 columns">
+                        <label class="text-left middle">万</label>
+                    </div>
+                    <div class="small-6 columns"></div>
+                </div>
+
+                <div class="row">
+                    <div class="small-3 columns">
+                        <label class="text-right middle">按揭年数</label>
+                    </div>
+                    <div class="small-3 columns">
+                        <select name="month">
+                            <option value="12">1年（12期）</option>
+                            <option value="24">2年（24期）</option>
+                            <option value="36">3年（36期）</option>
+                            <option value="48">4年（48期）</option>
+                            <option value="60">5年（60期）</option>
+                            <option value="72">6年（72期）</option>
+                            <option value="84">7年（84期）</option>
+                            <option value="96">8年（96期）</option>
+                            <option value="108">9年（108期）</option>
+                            <option value="120">10年（120期）</option>
+                            <option value="132">11年（132期）</option>
+                            <option value="144">12年（144期）</option>
+                            <option value="156">13年（156期）</option>
+                            <option value="168">14年（168期）</option>
+                            <option value="180">15年（180期）</option>
+                            <option value="192">16年（192期）</option>
+                            <option value="204">17年（204期）</option>
+                            <option value="216">18年（216期）</option>
+                            <option value="228">19年（228期）</option>
+                            <option selected value="240">20年（240期）</option>
+                            <option value="252">21年（252期）</option>
+                            <option value="264">22年（264期）</option>
+                            <option value="276">23年（276期）</option>
+                            <option value="288">24年（288期）</option>
+                            <option value="300">25年（300期）</option>
+                            <option value="312">26年（312期）</option>
+                            <option value="324">27年（324期）</option>
+                            <option value="336">28年（336期）</option>
+                            <option value="348">29年（348期）</option>
+                            <option value="360">30年（360期）</option>
+                        </select>
+                    </div>
+                    <div class="small-6 columns"></div>
+                </div>
+
+                <div class="row">
+                    <div class="small-3 columns">
+                        <label class="text-right middle">利率</label>
+                    </div>
+                    <div class="small-1 columns">
+                        <input type="number" name="businessRate" value="4.9" class="text-right" >
+                    </div>
+                    <div class="small-1 columns">
+                        <label class="text-left middle">%</label>
+                    </div>
+                    <div class="small-7 columns"></div>
+                </div>
+
+                <div class="row">
+                    <div class="small-12 columns">
+                        <button class="expanded button" onclick="sendRequest(1)">开始计算</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tabs-panel" id="cpf">
+            <form id="cpfForm" onsubmit="return false;">
+                <input type="hidden" name="type" value="2">
+                <div class="row">
+                    <div class="small-3 columns">
+                        <label class="text-right middle">贷款总额</label>
+                    </div>
+                    <div class="small-2 columns">
+                        <input type="tel" name="cpfMortgageTotal" value="100" class="text-right">
+                    </div>
+                    <div class="small-1 columns">
+                        <label class="text-left middle">万</label>
+                    </div>
+                    <div class="small-6 columns"></div>
+                </div>
+
+                <div class="row">
+                    <div class="small-3 columns">
+                        <label class="text-right middle">按揭年数</label>
+                    </div>
+                    <div class="small-3 columns">
+                        <select name="month">
+                            <option value="12">1年（12期）</option>
+                            <option value="24">2年（24期）</option>
+                            <option value="36">3年（36期）</option>
+                            <option value="48">4年（48期）</option>
+                            <option value="60">5年（60期）</option>
+                            <option value="72">6年（72期）</option>
+                            <option value="84">7年（84期）</option>
+                            <option value="96">8年（96期）</option>
+                            <option value="108">9年（108期）</option>
+                            <option value="120">10年（120期）</option>
+                            <option value="132">11年（132期）</option>
+                            <option value="144">12年（144期）</option>
+                            <option value="156">13年（156期）</option>
+                            <option value="168">14年（168期）</option>
+                            <option value="180">15年（180期）</option>
+                            <option value="192">16年（192期）</option>
+                            <option value="204">17年（204期）</option>
+                            <option value="216">18年（216期）</option>
+                            <option value="228">19年（228期）</option>
+                            <option selected value="240">20年（240期）</option>
+                            <option value="252">21年（252期）</option>
+                            <option value="264">22年（264期）</option>
+                            <option value="276">23年（276期）</option>
+                            <option value="288">24年（288期）</option>
+                            <option value="300">25年（300期）</option>
+                            <option value="312">26年（312期）</option>
+                            <option value="324">27年（324期）</option>
+                            <option value="336">28年（336期）</option>
+                            <option value="348">29年（348期）</option>
+                            <option value="360">30年（360期）</option>
+                        </select>
+                    </div>
+                    <div class="small-6 columns"></div>
+                </div>
+
+                <div class="row">
+                    <div class="small-3 columns">
+                        <label class="text-right middle">利率</label>
+                    </div>
+                    <div class="small-1 columns">
+                        <input type="number" name="cpfRate" value="3.25" class="text-right">
+                    </div>
+                    <div class="small-1 columns">
+                        <label class="text-left middle">%</label>
+                    </div>
+                    <div class="small-7 columns"></div>
+                </div>
+
+                <div class="row">
+                    <div class="small-12 columns">
+                        <button class="expanded button" onclick="sendRequest(2)">开始计算</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tabs-panel" id="businessAndCPF">
+
+        </div>
+    </div>
+
+    <ul class="tabs" data-tabs id="refundType">
+        <li class="tabs-title is-active"><a href="#interestBody">等额本息</a></li>
+        <li class="tabs-title"><a href="#capitalBody">等额本金</a></li>
+    </ul>
+
+    <div id="dataList">
+        <div class="tabs-content" data-tabs-content="refundType">
+            <div class="tabs-panel is-active" id="interestBody">
+                <table class="hover">
+                    <thead>
+                    <tr>
+                        <th>期次</th>
+                        <th>每月本息</th>
+                        <th>每月利息</th>
+                        <th>每月本金</th>
+                        <th>剩余本金</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="tabs-panel" id="capitalBody">
+                <table class="hover">
+                    <thead>
+                    <tr>
+                        <th>期次</th>
+                        <th>每月本息</th>
+                        <th>每月利息</th>
+                        <th>每月本金</th>
+                        <th>剩余本金</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(document).foundation();
+    })
+
+    function sendRequest(type) {
+        var jsonObj = null;
+        if (type == 1) {
+            jsonObj = $("#businessForm").serializeObject();
+        } else if (type == 2) {
+            jsonObj = $("#cpfForm").serializeObject();
+        } else {
+
+        }
+
+        var jsonStr = JSON.stringify(jsonObj);
+        $.ajax({
+            type: "post",
+            url: "http://123.56.195.62:8099/life-web-client/rest/mortgage/calculate",
+            dataType: "json",
+            contentType : "application/json ; charset=utf-8",
+            data: jsonStr,
+            success: function(data) {
+                console.log(data);
+                if (data.statusCode != 200) {
+                    alert(data.statusDesc);
+                    return;
+                }
+                $("#interestBody tbody").empty();
+                var interestLiStr = "";
+                var dataList = data.data.avgInterestType.monthDetailList;
+                for (var i=0; i<dataList.length; i++) {
+                    var item = dataList[i];
+                    interestLiStr += "<tr>";
+                    interestLiStr += "<td>" + item.monthCnt + "</td>";
+                    interestLiStr += "<td>" + item.monthPay + "</td>";
+                    interestLiStr += "<td>" + item.interestPay + "</td>";
+                    interestLiStr += "<td>" + item.capitalPay + "</td>";
+                    interestLiStr += "<td>" + item.remainCapital + "</td>";
+                    interestLiStr += "</td>";
+                }
+                $("#interestBody tbody").append(interestLiStr);
+
+                $("#capitalBody tbody").empty();
+                var capitalLiStr = "";
+                var dataList = data.data.avgCapitalType.monthDetailList;
+                for (var i=0; i<dataList.length; i++) {
+                    var item = dataList[i];
+                    capitalLiStr += "<tr>";
+                    capitalLiStr += "<td>" + item.monthCnt + "</td>";
+                    capitalLiStr += "<td>" + item.monthPay + "</td>";
+                    capitalLiStr += "<td>" + item.interestPay + "</td>";
+                    capitalLiStr += "<td>" + item.capitalPay + "</td>";
+                    capitalLiStr += "<td>" + item.remainCapital + "</td>";
+                    capitalLiStr += "</td>";
+                }
+                $("#capitalBody tbody").append(capitalLiStr);
+            }
+        });
+    }
+</script>
+</body>
+</html>

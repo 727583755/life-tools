@@ -17,7 +17,7 @@ public class MortgageVo {
     private Integer monthTotal;
     /** 月均还款 */
     private Double averageMonthPay;
-    List<MonthDetail> monthDetailList;
+    private List<MonthDetail> monthDetailList;
 
     public Double getMortgageTotal() {
         return mortgageTotal;

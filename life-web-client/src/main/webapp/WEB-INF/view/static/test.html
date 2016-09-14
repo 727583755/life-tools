@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+
+    <link rel="stylesheet" href="plug/foundation/css/foundation.min.css">
+    <script src="plug/foundation/js/vendor/jquery.js" ></script>
+    <script src="plug/foundation/js/vendor/foundation.min.js" ></script>
+    <script src="plug/foundation/js/app.js" ></script>
+    
+    <style>
+
+        .tabs-content > .tabs-panel {
+            animation: tabsEffect 2s;
+        }
+
+        @keyframes tabsEffect {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <ul class="tabs" data-tabs id="example-tabs">
+        <li class="tabs-title is-active"><a href="#home">111</a></li>
+        <li class="tabs-title"><a href="#home2">111</a></li>
+        <li class="tabs-title"><a href="#home3">111</a></li>
+    </ul>
+
+    <div class="tabs-content" data-tabs-content="example-tabs">
+        <div class="tabs-panel is-active" id="home">
+            aaaa
+        </div>
+        <div class="tabs-panel" id="home2">
+            bbbbdddddddddddddddddddd44444444444444444
+        </div>
+        <div class="tabs-panel" id="home3">
+            cccc
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $(document).foundation();
+        })
+    </script>
+</body>
+</html>
