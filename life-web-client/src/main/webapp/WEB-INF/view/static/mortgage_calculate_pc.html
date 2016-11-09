@@ -33,6 +33,7 @@
             text-align: center;
             font-weight: bold;
             font-size: 20px;
+            padding: 10px 20px;
         }
 
         .tabs-content {
@@ -42,7 +43,7 @@
         }
 
         .tabs-content > .tabs-panel {
-            animation: tabsEffect 500ms;
+            animation: tabsEffect 800ms;
         }
 
         @keyframes tabsEffect {
@@ -89,17 +90,16 @@
                     <div class="small-2 columns">
                         <input type="tel" name="businessMortgageTotal" value="100" class="text-right">
                     </div>
-                    <div class="small-1 columns">
+                    <div class="small-1 columns end">
                         <label class="text-left middle">万</label>
                     </div>
-                    <div class="small-6 columns"></div>
                 </div>
 
                 <div class="row">
                     <div class="small-3 columns">
                         <label class="text-right middle">按揭年数</label>
                     </div>
-                    <div class="small-3 columns">
+                    <div class="small-3 columns end">
                         <select name="month">
                             <option value="12">1年（12期）</option>
                             <option value="24">2年（24期）</option>
@@ -133,7 +133,6 @@
                             <option value="360">30年（360期）</option>
                         </select>
                     </div>
-                    <div class="small-6 columns"></div>
                 </div>
 
                 <div class="row">
@@ -143,10 +142,9 @@
                     <div class="small-1 columns">
                         <input type="number" name="businessRate" value="4.9" class="text-right" >
                     </div>
-                    <div class="small-1 columns">
+                    <div class="small-1 columns end">
                         <label class="text-left middle">%</label>
                     </div>
-                    <div class="small-7 columns"></div>
                 </div>
 
                 <div class="row">
@@ -166,17 +164,16 @@
                     <div class="small-2 columns">
                         <input type="tel" name="cpfMortgageTotal" value="100" class="text-right">
                     </div>
-                    <div class="small-1 columns">
+                    <div class="small-1 columns end">
                         <label class="text-left middle">万</label>
                     </div>
-                    <div class="small-6 columns"></div>
                 </div>
 
                 <div class="row">
                     <div class="small-3 columns">
                         <label class="text-right middle">按揭年数</label>
                     </div>
-                    <div class="small-3 columns">
+                    <div class="small-3 columns end">
                         <select name="month">
                             <option value="12">1年（12期）</option>
                             <option value="24">2年（24期）</option>
@@ -210,7 +207,6 @@
                             <option value="360">30年（360期）</option>
                         </select>
                     </div>
-                    <div class="small-6 columns"></div>
                 </div>
 
                 <div class="row">
@@ -220,10 +216,9 @@
                     <div class="small-1 columns">
                         <input type="number" name="cpfRate" value="3.25" class="text-right">
                     </div>
-                    <div class="small-1 columns">
+                    <div class="small-1 columns end">
                         <label class="text-left middle">%</label>
                     </div>
-                    <div class="small-7 columns"></div>
                 </div>
 
                 <div class="row">
@@ -246,6 +241,34 @@
     <div id="dataList">
         <div class="tabs-content" data-tabs-content="refundType">
             <div class="tabs-panel is-active" id="interestBody">
+                <div class="row align-right">
+                    <div class="columns small-2">
+                        <label class="text-right">还款总额：</label>
+                    </div>
+                    <div class="columns small-1">
+                        <label class="label">1252</label>
+                    </div>
+                    <div class="columns small-2">
+                        <label class="text-right">贷款总额：</label>
+                    </div>
+                    <div class="columns small-2 end">
+                        <label class="label">1252</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-2 columns">
+                        <label class="text-right">利息总额：</label>
+                    </div>
+                    <div class="small-1 columns">
+                        <label class="label">1252</label>
+                    </div>
+                    <div class="small-2 columns">
+                        <label class="text-right">月均还款：</label>
+                    </div>
+                    <div class="small-2 columns end">
+                        <label class="label">1252</label>
+                    </div>
+                </div>
                 <table class="hover">
                     <thead>
                     <tr>
